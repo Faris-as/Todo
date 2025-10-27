@@ -36,12 +36,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ============================================================================
-# CRUD OPERATIONS - Database Functions
-# ============================================================================
-# These functions handle direct database interactions using SQLAlchemy
+@app.get("/", tags=["root"])
+def root():
+    return {
+        "message": "Welcome to Todo List API",
+        "docs": "/docs",
+        "endpoints": {
+            "GET /todos": "Get all todos",
+            "GET /todos/{id}": "Get a specific todo",
+            "POST /todos": "Create a new todo",
+            "PUT /todos/{id}": "Update a todo",
+            "DELETE /todos/{id}": "Delete a todo"
+                    }
+        }
 
-def db_get_todos(db: Session, skip: int = 0, limit: int = 100):
+
+
+@app.get("/todos", response_model=List[schemas.TodoResponse])
+def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """
     Get all todos from database with pagination
     - skip: How many records to skip (for pagination)
@@ -49,7 +61,9 @@ def db_get_todos(db: Session, skip: int = 0, limit: int = 100):
     """
     return db.query(models.Todo).offset(skip).limit(limit).all()
 
-def db_get_todo(db: Session, todo_id: int):
+
+@app.get("/todo/{todo_id}")
+def read_todo(db: Session = Depends(get_db), todo_id: int):
     """
     Get a single todo by its ID
     Returns None if todo doesn't exist

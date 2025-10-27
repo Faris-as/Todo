@@ -8,8 +8,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
+
+env
 # Get database URL from environment variable
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://todouser:todopass@localhost:5432/tododb")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Create database engine
 # echo = True will print all SQL queries (useful for learning)
