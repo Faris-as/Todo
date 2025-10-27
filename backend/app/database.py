@@ -18,4 +18,18 @@ engine = create_engine(DATABASE_URL, echo=True)
 # Create a SessionLocal class for database sessions
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
- 
+# Base class for our database sessions
+Base = declarative_base()
+
+# Dependency to get database session
+def get_db():
+    """
+    Generator function that yields a database session.
+    Automatically closes the session when done
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        
