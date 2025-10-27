@@ -1,36 +1,16 @@
-version: '3.8'
+version: "3.8"
+
 services:
-  db:
+  postgres:
     image: postgres:15
-    container_name: todo_postgres
+    container_name: postgres-container1
+    restart: always
     environment:
-      - POSTGRES_USER: todouser
-      - POSTGRES_PASSWORD: todopass
-      - POSTGRES_DB: tododb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
     ports:
-      - "5432:5432"
+      - "9896:5432"
     volumes:
-      - postgres_data:/var/lib/postgres/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg-isready -U todouser -d tododb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-backend:
-  build: ./backend
-  container_name: todo_backend
-  ports:
-    - "8000:8000"
-  environment:
-    DATABASE_URL: postgresql://todouser:todopass@db:5432/tododb
-  depends_on:
-    db:
-      condition: service_healthy
-    volumes:
-      - ./backend:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-volumes:
-  postgres_data:
+      - ./postgres_data:/var/lib/postgresql/data
+      
