@@ -15,7 +15,7 @@ app = APIRouter(
     prefix = "/todos"
 )
 
-
+# this is for getting all the lists
 @app.get("/all", response_model=List[schemas.TodoResponse])
 def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return db.query(models.Todo).offset(skip).limit(limit).all()
